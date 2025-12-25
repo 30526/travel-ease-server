@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -32,6 +32,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/vehicles", async (req, res) => {
+      const cursor = myCollection.find();
+      const vehicles = await cursor.toArray();
+      res.send(vehicles);
+    });
+
+   
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
