@@ -33,6 +33,12 @@ async function run() {
     });
 
     app.get("/vehicles", async (req, res) => {
+      const cursor = myCollection.find().sort({ createdAt: -1 }).limit(4);
+      const vehicles = await cursor.toArray();
+      res.send(vehicles);
+    });
+
+    app.get("/all-vehicles", async (req, res) => {
       const cursor = myCollection.find();
       const vehicles = await cursor.toArray();
       res.send(vehicles);
