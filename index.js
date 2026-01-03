@@ -39,9 +39,14 @@ async function run() {
     });
 
     app.get("/all-vehicles", async (req, res) => {
-      const cursor = myCollection.find();
-      const vehicles = await cursor.toArray();
-      res.send(vehicles);
+      const query = {};
+      const email = req.query.email;
+      if (email) {
+        query.userEmail = email;
+      }
+      const cursor = myCollection.find(query).sort({ createdAt: -1 });
+      const result = await cursor.toArray();
+      res.send(result);
     });
 
     app.get("/vehicles/:id", async (req, res) => {
