@@ -25,6 +25,7 @@ async function run() {
     await client.connect();
     const travelDB = client.db("travel_ease_db");
     const myCollection = travelDB.collection("vehicles");
+    const bookingsCollection = travelDB.collection("bookings");
 
     app.post("/vehicles", async (req, res) => {
       const newVehicle = req.body;
@@ -54,6 +55,24 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const vehicle = await myCollection.findOne(query);
       res.send(vehicle);
+    });
+
+    // bookings api's
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      const result = await bookingsCollection.insertOne(booking);
+      res.send(result);
+    });
+
+    app.get("/bookings", async (req, res) => {
+      const query = {};
+      const email = req.query.email;
+      if (email) {
+        query.email = email;
+      }
+      const cursor = bookingsCollection.find(query).sort({ createdAt: -1 });
+      const result = await cursor.toArray();
+      res.send(result);
     });
 
     await client.db("admin").command({ ping: 1 });
