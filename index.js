@@ -57,6 +57,32 @@ async function run() {
       res.send(vehicle);
     });
 
+    app.patch("/vehicles/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateVehicle = req.body;
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: {
+          vehicleName: updateVehicle.vehicleName,
+          brand: updateVehicle.brand,
+          year: updateVehicle.year,
+          category: updateVehicle.category,
+          transmission: updateVehicle.transmission,
+          fuelType: updateVehicle.fuelType,
+          seats: updateVehicle.seats,
+          mileage: updateVehicle.mileage,
+          condition: updateVehicle.condition,
+          pricePerDay: updateVehicle.pricePerDay,
+          availability: updateVehicle.availability,
+          coverImage: updateVehicle.coverImage,
+          description: updateVehicle.description,
+          galleryImages: updateVehicle.galleryImages || [],
+        },
+      };
+      const result = await myCollection.updateOne(query, update);
+      res.send(result);
+    });
+
     app.delete("/vehicles/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
