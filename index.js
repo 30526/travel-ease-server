@@ -26,6 +26,21 @@ async function run() {
     const travelDB = client.db("travel_ease_db");
     const myCollection = travelDB.collection("vehicles");
     const bookingsCollection = travelDB.collection("bookings");
+    const userCollection = travelDB.collection("users");
+
+    // upsert users
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const email = user.email;
+      const query = { email: email };
+      const existingUser = await userCollection.findOne(query);
+      if (existingUser) {
+        res.send({ message: "User Already Exist" });
+      } else {
+        const result = await userCollection.insertOne(user);
+        res.send(result);
+      }
+    });
 
     app.post("/vehicles", async (req, res) => {
       const newVehicle = req.body;
